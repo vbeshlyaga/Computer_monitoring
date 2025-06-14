@@ -18,3 +18,28 @@ class Component:
         cloned = Component(self.name, self.info)
         cloned.children = [child.clone() for child in self.children]
         return cloned
+
+
+class CPU(Component):
+    def init(self, cores, frequency):
+        super().init('CPU', f"{cores} cores @ {frequency}MHz")
+
+    def clone(self):
+        return CPU(int(self.info.split()[0]),
+                   int(self.info.split('@ ')[1][:-4]))
+
+
+class Memory(Component):
+    def init(self, size):
+        super().init('Memory', f"{size} MiB")
+
+    def clone(self):
+        return Memory(int(self.info.split()[0]))
+
+
+class Partition(Component):
+    def init(self, size, label):
+        super().init(f"[{label}]", f"{size} GiB")
+
+    def clone(self):
+        return Partition(int(self.info.split()[0]), self.name.strip('[]'))
