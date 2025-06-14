@@ -1,3 +1,6 @@
+from io import StringIO
+
+
 class Component:
     def __init__(self, name, info):
         self.name = name
@@ -82,3 +85,32 @@ class Host:
             self.ip_list[:],
             [comp.clone() for comp in self.components]
         )
+
+
+class Network:
+    def __init__(self, name):
+        self.name = name
+        self.hosts = []
+
+    def add_host(self, host):
+        self.hosts.append(host)
+
+    def print_me(self, output=None):
+        output = output or StringIO()
+        output.write(f"Network: {self.name}\n")
+        for i, host in enumerate(self.hosts):
+            host.print_me("", i == len(self.hosts) - 1, output)
+        if output is None:
+            print(output.getvalue())
+        return output.getvalue()
+
+    def clone(self):
+        cloned = Network(self.name)
+        cloned.hosts = [host.clone() for host in self.hosts]
+        return cloned
+
+    def find_host(self, name):
+        for host in self.hosts:
+            if host.name == name:
+                return host
+        return None
