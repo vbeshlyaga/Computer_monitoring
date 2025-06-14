@@ -43,3 +43,42 @@ class Partition(Component):
 
     def clone(self):
         return Partition(int(self.info.split()[0]), self.name.strip('[]'))
+
+
+class HDD(Component):
+    def init(self, size):
+        super().init('HDD', f"{size} GiB")
+
+    def add_partition(self, partition):
+        self.add_child(partition)
+
+    def clone(self):
+        cloned = HDD(int(self.info.split()[0]))
+        cloned.children = [child.clone() for child in self.children]
+        return cloned
+
+
+class Host:
+    def init(self, name, ip_list, components=None):
+        self.name = name
+        self.ip_list = ip_list
+        self.components = components or []
+
+    def add_component(self, component):
+        self.components.append(component)
+
+    def print_me(self, prefix, is_last, output):
+        connector = '\\-' if is_last else '+-'
+        output.write(f"{prefix}{connector}Host: {self.name}\n")
+        new_prefix = prefix + ("  " if is_last else "| ")
+        for ip in self.ip_list:
+            output.write(f"{new_prefix}+-{ip}\n")
+        for i, comp in enumerate(self.components):
+            comp.print_me(new_prefix, i == len(self.components) - 1, output)
+
+    def clone(self):
+        return Host(
+            self.name,
+            self.ip_list[:],
+            [comp.clone() for comp in self.components]
+        )
