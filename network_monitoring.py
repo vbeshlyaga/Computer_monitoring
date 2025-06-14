@@ -24,8 +24,8 @@ class Component:
 
 
 class CPU(Component):
-    def init(self, cores, frequency):
-        super().init('CPU', f"{cores} cores @ {frequency}MHz")
+    def __init__(self, cores, frequency):
+        super().__init__('CPU', f"{cores} cores @ {frequency}MHz")
 
     def clone(self):
         return CPU(int(self.info.split()[0]),
@@ -33,24 +33,24 @@ class CPU(Component):
 
 
 class Memory(Component):
-    def init(self, size):
-        super().init('Memory', f"{size} MiB")
+    def __init__(self, size):
+        super().__init__('Memory', f"{size} MiB")
 
     def clone(self):
         return Memory(int(self.info.split()[0]))
 
 
 class Partition(Component):
-    def init(self, size, label):
-        super().init(f"[{label}]", f"{size} GiB")
+    def __init__(self, size, label):
+        super().__init__(f"[{label}]", f"{size} GiB")
 
     def clone(self):
         return Partition(int(self.info.split()[0]), self.name.strip('[]'))
 
 
 class HDD(Component):
-    def init(self, size):
-        super().init('HDD', f"{size} GiB")
+    def __init__(self, size):
+        super().__init__('HDD', f"{size} GiB")
 
     def add_partition(self, partition):
         self.add_child(partition)
@@ -62,7 +62,7 @@ class HDD(Component):
 
 
 class Host:
-    def init(self, name, ip_list, components=None):
+    def __init__(self, name, ip_list, components=None):
         self.name = name
         self.ip_list = ip_list
         self.components = components or []
